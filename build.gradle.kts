@@ -1,4 +1,5 @@
 import com.google.protobuf.gradle.*
+
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.4.30"
     id("org.jetbrains.kotlin.kapt") version "1.4.30"
@@ -32,28 +33,30 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     implementation("io.micronaut:micronaut-validation")
+
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
-    testImplementation("io.micronaut:micronaut-http-client")
-}
 
+    testImplementation("org.mockito:mockito-core")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+}
 
 application {
     mainClass.set("org.seariver.ApplicationKt")
 }
 java {
-    sourceCompatibility = JavaVersion.toVersion("14")
+    sourceCompatibility = JavaVersion.toVersion("11")
 }
 
 tasks {
     compileKotlin {
         kotlinOptions {
-            jvmTarget = "14"
+            jvmTarget = "11"
         }
     }
     compileTestKotlin {
         kotlinOptions {
-            jvmTarget = "14"
+            jvmTarget = "11"
         }
     }
 
