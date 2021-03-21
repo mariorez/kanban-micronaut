@@ -1,8 +1,9 @@
 package org.seariver.kanbanboard.application.usecase.write
 
-import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.seariver.kanbanboard.application.domain.Bucket
 import org.seariver.kanbanboard.application.output.BucketRepository
@@ -25,6 +26,11 @@ class CreateBucketHandlerTest {
         handler.handle(command)
 
         // THEN
-        verify(repository).create(any<Bucket>())
+        argumentCaptor<Bucket>().apply {
+            verify(repository).create(capture())
+            assertThat(bucketId).isEqualTo(firstValue.bucketId)
+            assertThat(position).isEqualTo(firstValue.position)
+            assertThat(name).isEqualTo(firstValue.name)
+        }
     }
 }

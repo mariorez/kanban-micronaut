@@ -7,6 +7,13 @@ class CreateBucketHandler(
     private val repository: BucketRepository
 ) {
     fun handle(command: CreateBucketCommand) {
-        repository.create(Bucket())
+
+        repository.create(
+            Bucket(
+                command.bucketId,
+                command.position,
+                command.name
+            )
+        )
     }
 }

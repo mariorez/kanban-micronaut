@@ -39,6 +39,7 @@ dependencies {
 
     testImplementation("org.mockito:mockito-core")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+    testImplementation("org.assertj:assertj-core")
 }
 
 application {

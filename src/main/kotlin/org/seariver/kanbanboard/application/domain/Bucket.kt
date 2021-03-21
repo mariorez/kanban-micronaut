@@ -1,5 +1,9 @@
 package org.seariver.kanbanboard.application.domain
 
-class Bucket {
+import java.util.*
 
-}
+data class Bucket(
+    var bucketId: UUID,
+    var position: Double,
+    var name: String
+)
