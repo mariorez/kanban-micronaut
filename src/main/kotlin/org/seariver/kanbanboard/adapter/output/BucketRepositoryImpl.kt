@@ -16,12 +16,11 @@ class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepositor
             values (?, ?, ?)
             """.trimIndent()
 
-        with(connection) {
-            val statement = prepareStatement(sql)
-            statement.setString(1, bucket.bucketId.toString())
-            statement.setDouble(2, bucket.position)
-            statement.setString(3, bucket.name)
-            statement.execute()
+        connection.prepareStatement(sql).run {
+            setString(1, bucket.bucketId.toString())
+            setDouble(2, bucket.position)
+            setString(3, bucket.name)
+            executeUpdate()
         }
     }
 
@@ -31,21 +30,19 @@ class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepositor
             SELECT bucket_id, position, name 
             FROM bucket 
             WHERE bucket_id = ?
-            """.trimIndent()
+            """
 
-        with(connection) {
-            val statement = prepareStatement(sql)
-            statement.setString(1, bucketId.toString())
-
-            val rs = statement.executeQuery()
-
-            return if (rs.next()) Optional.of(
-                Bucket(
-                    UUID.fromString(rs.getString("bucket_id")),
-                    rs.getDouble("position"),
-                    rs.getString("name")
-                )
-            ) else Optional.empty()
+        return connection.prepareStatement(sql).run {
+            setString(1, bucketId.toString())
+            executeQuery().run {
+                if (next()) Optional.of(
+                    Bucket(
+                        UUID.fromString(getString("bucket_id")),
+                        getDouble("position"),
+                        getString("name")
+                    )
+                ) else Optional.empty()
+            }
         }
     }
 }
