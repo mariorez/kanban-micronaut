@@ -43,7 +43,6 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.0.0")
     testImplementation("org.assertj:assertj-core")
     testImplementation("com.h2database:h2")
-    testImplementation("org.apache.commons:commons-dbcp2:2.8.0")
 }
 
 application {

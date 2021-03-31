@@ -1,14 +1,14 @@
 package helper
 
-import org.apache.commons.dbcp2.BasicDataSource
+import com.zaxxer.hikari.HikariDataSource
 
-class DataSourceHelper : BasicDataSource() {
+class DataSourceHelper : HikariDataSource() {
 
     init {
         val url = "jdbc:h2:mem:DATABASE_TEST;" +
                 "MODE=PostgreSQL;" +
                 "INIT=RUNSCRIPT FROM 'src/main/resources/db/migration/V001__Initial_setup.sql'\\;"
 
-        setUrl(url)
+        jdbcUrl = url
     }
 }

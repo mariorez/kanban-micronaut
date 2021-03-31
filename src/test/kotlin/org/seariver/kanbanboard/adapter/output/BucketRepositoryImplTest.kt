@@ -1,7 +1,6 @@
 package org.seariver.kanbanboard.adapter.output
 
 import helper.DataSourceHelper
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
@@ -10,7 +9,6 @@ import org.seariver.kanbanboard.application.output.BucketRepository
 import java.util.*
 import javax.sql.DataSource
 
-@MicronautTest
 class BucketRepositoryImplTest {
 
     @Test

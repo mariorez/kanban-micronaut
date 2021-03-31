@@ -13,12 +13,15 @@ class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepositor
 
         val sql = """
             INSERT INTO bucket (bucket_id, position, name) 
-            values ('${bucket.bucketId}', '${bucket.position}', '${bucket.name}')
+            values (?, ?, ?)
             """.trimIndent()
 
         with(connection) {
-            createStatement().execute(sql)
-            commit()
+            val statement = prepareStatement(sql)
+            statement.setString(1, bucket.bucketId.toString())
+            statement.setDouble(2, bucket.position)
+            statement.setString(3, bucket.name)
+            statement.execute()
         }
     }
 
@@ -27,11 +30,15 @@ class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepositor
         val sql = """
             SELECT bucket_id, position, name 
             FROM bucket 
-            WHERE bucket_id = '$bucketId'
+            WHERE bucket_id = ?
             """.trimIndent()
 
         with(connection) {
-            val rs = createStatement().executeQuery(sql)
+            val statement = prepareStatement(sql)
+            statement.setString(1, bucketId.toString())
+
+            val rs = statement.executeQuery()
+
             return if (rs.next()) Optional.of(
                 Bucket(
                     UUID.fromString(rs.getString("bucket_id")),
