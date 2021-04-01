@@ -2,7 +2,9 @@ package org.seariver.kanbanboard.application.usecase.write
 
 import org.seariver.kanbanboard.application.domain.Bucket
 import org.seariver.kanbanboard.application.output.BucketRepository
+import javax.inject.Singleton
 
+@Singleton
 class CreateBucketHandler(
     private val repository: BucketRepository
 ) {

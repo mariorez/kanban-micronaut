@@ -1,20 +1,18 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-option java_package = "org.seariver";
-option java_outer_classname = "Kanbanboard";
-option objc_class_prefix = "HLW";
+option java_package = "org.seariver.kanbanboard.grpc";
 
-package org.seariver;
+package org.seariver.kanbanboard.grpc;
+
+import "google/protobuf/empty.proto";
 
 service KanbanboardService {
-  rpc send (KanbanboardRequest) returns (KanbanboardReply) {}
+  rpc createBucket (CreateBucketRequest) returns (google.protobuf.Empty) {}
 }
 
-message KanbanboardRequest {
-  string name = 1;
-}
-
-message KanbanboardReply {
-  string message = 1;
+message CreateBucketRequest {
+  string bucket_id = 1;
+  double position = 2;
+  string name = 3;
 }

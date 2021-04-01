@@ -1,0 +1,13 @@
+micronaut:
+  application:
+    name: kanbanboard
+
+datasources:
+  default:
+    url: jdbc:h2:mem:INTEGRATION_TEST;MODE=PostgreSQL;
+    driverClassName: org.h2.Driver
+
+flyway:
+  datasources:
+    default:
+      enabled: true

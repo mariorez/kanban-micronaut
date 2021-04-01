@@ -4,7 +4,12 @@ micronaut:
 
 datasources:
   default:
-    url: jdbc:postgresql://localhost:5432/kabanboard
+    url: jdbc:postgresql://localhost:5432/kanbanboard
     driverClassName: org.postgresql.Driver
-    username: kabanboard
-    password: kabanboard
+    username: kanbanboard
+    password: kanbanboard
+
+flyway:
+  datasources:
+    default:
+      enabled: true

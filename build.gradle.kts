@@ -1,4 +1,9 @@
-import com.google.protobuf.gradle.*
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.id
+import com.google.protobuf.gradle.ofSourceSet
+import com.google.protobuf.gradle.plugins
+import com.google.protobuf.gradle.protobuf
+import com.google.protobuf.gradle.protoc
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.4.30"
@@ -6,7 +11,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.allopen") version "1.4.30"
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("io.micronaut.application") version "1.4.2"
-    id("com.google.protobuf") version "0.8.13"
+    id("com.google.protobuf") version "0.8.15"
 }
 
 version = "0.1"
@@ -35,12 +40,15 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+    implementation("io.grpc:grpc-kotlin-stub:1.0.0")
+
 
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     runtimeOnly("org.postgresql:postgresql")
 
-    testImplementation("org.mockito.kotlin:mockito-kotlin:3.0.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:3.1.0")
     testImplementation("org.assertj:assertj-core")
     testImplementation("com.h2database:h2")
 }
@@ -69,6 +77,7 @@ sourceSets {
     main {
         java {
             srcDirs("build/generated/source/proto/main/grpc")
+            srcDirs("build/generated/source/proto/main/grpckt")
             srcDirs("build/generated/source/proto/main/java")
         }
     }
@@ -76,18 +85,22 @@ sourceSets {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.14.0"
+        artifact = "com.google.protobuf:protoc:3.15.6"
     }
     plugins {
         id("grpc") {
-            artifact = "io.grpc:protoc-gen-grpc-java:1.33.1"
+            artifact = "io.grpc:protoc-gen-grpc-java:1.36.1"
+        }
+
+        id("grpckt") {
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:1.0.0:jdk7@jar"
         }
     }
     generateProtoTasks {
         ofSourceSet("main").forEach {
             it.plugins {
-                // Apply the "grpc" plugin whose spec is defined above, without options.
                 id("grpc")
+                id("grpckt")
             }
         }
     }

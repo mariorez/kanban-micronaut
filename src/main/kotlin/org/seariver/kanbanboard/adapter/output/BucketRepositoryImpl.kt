@@ -3,8 +3,10 @@ package org.seariver.kanbanboard.adapter.output
 import org.seariver.kanbanboard.application.domain.Bucket
 import org.seariver.kanbanboard.application.output.BucketRepository
 import java.util.*
+import javax.inject.Singleton
 import javax.sql.DataSource
 
+@Singleton
 class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepository {
 
     private val connection = datasource.connection
@@ -17,7 +19,7 @@ class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepositor
             """.trimIndent()
 
         connection.prepareStatement(sql).run {
-            setString(1, bucket.bucketId.toString())
+            setObject(1, bucket.bucketId)
             setDouble(2, bucket.position)
             setString(3, bucket.name)
             executeUpdate()
