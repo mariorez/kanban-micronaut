@@ -47,4 +47,28 @@ class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepositor
             }
         }
     }
+
+    override fun findAll(): Set<Bucket> {
+
+        val sql = """
+            SELECT bucket_id, position, name 
+            FROM bucket
+            """
+
+        val result = mutableSetOf<Bucket>()
+
+        connection.prepareStatement(sql).run {
+            executeQuery().run {
+                while (next()) {
+                    result += Bucket(
+                        UUID.fromString(getString("bucket_id")),
+                        getDouble("position"),
+                        getString("name")
+                    )
+                }
+            }
+        }
+
+        return result;
+    }
 }

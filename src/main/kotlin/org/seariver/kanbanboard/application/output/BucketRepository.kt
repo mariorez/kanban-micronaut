@@ -9,4 +9,6 @@ interface BucketRepository {
 
     fun findById(bucketId: UUID): Optional<Bucket>
 
+    fun findAll(): Set<Bucket>
+
 }
