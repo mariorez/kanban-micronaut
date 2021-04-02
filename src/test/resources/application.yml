@@ -1,7 +1,3 @@
-micronaut:
-  application:
-    name: kanbanboard
-
 datasources:
   default:
     url: jdbc:h2:mem:INTEGRATION_TEST;MODE=PostgreSQL;

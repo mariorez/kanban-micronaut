@@ -8,11 +8,16 @@ package org.seariver.kanbanboard.grpc;
 import "google/protobuf/empty.proto";
 
 service KanbanboardService {
-  rpc createBucket (CreateBucketRequest) returns (google.protobuf.Empty) {}
+  rpc createBucket (BucketGrpc) returns (google.protobuf.Empty) {}
+  rpc findAllBuckets (google.protobuf.Empty) returns (BucketResultSet) {}
 }
 
-message CreateBucketRequest {
+message BucketGrpc {
   string bucket_id = 1;
   double position = 2;
   string name = 3;
+}
+
+message BucketResultSet {
+  repeated BucketGrpc buckets = 1;
 }

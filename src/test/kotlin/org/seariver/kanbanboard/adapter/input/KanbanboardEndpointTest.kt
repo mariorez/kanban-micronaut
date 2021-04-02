@@ -1,15 +1,17 @@
 package org.seariver.kanbanboard.adapter.input
 
+import com.google.protobuf.Empty
 import io.grpc.ManagedChannel
 import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
 import io.micronaut.grpc.server.GrpcServerChannel
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import kotlinx.coroutines.runBlocking
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.seariver.kanbanboard.application.output.BucketRepository
-import org.seariver.kanbanboard.grpc.CreateBucketRequest
+import org.seariver.kanbanboard.grpc.BucketGrpc
 import org.seariver.kanbanboard.grpc.KanbanboardServiceGrpcKt.KanbanboardServiceCoroutineStub
 import java.util.*
 import javax.inject.Inject
@@ -33,19 +35,36 @@ class KanbanboardEndpointTest {
             val position = 1.2
             val name = "TODO"
 
-            val createBucketRequest = CreateBucketRequest.newBuilder()
+            val request = BucketGrpc.newBuilder()
                 .setBucketId(bucketId.toString())
                 .setPosition(position)
                 .setName(name)
                 .build()
 
             // WHEN
-            grpcClient.createBucket(createBucketRequest)
+            grpcClient.createBucket(request)
 
             // THEN
             val actual = bucketRepository.findById(bucketId).get()
             assertThat(actual.position).isEqualTo(position)
             assertThat(actual.name).isEqualTo(name)
+        }
+    }
+
+    @Test
+    fun `WHEN find all buckets MUST return the result set`() {
+
+        runBlocking {
+            // WHEN
+            val result = grpcClient.findAllBuckets(Empty.newBuilder().build())
+
+            // THEN
+            assertThat(result.bucketsList)
+                .extracting("position", "name")
+                .contains(
+                    Assertions.tuple(200.987, "SECOND-BUCKET"),
+                    Assertions.tuple(100.15, "FIRST-BUCKET")
+                )
         }
     }
 }
