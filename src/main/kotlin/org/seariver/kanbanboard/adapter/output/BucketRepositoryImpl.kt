@@ -53,6 +53,7 @@ class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepositor
         val sql = """
             SELECT bucket_id, position, name 
             FROM bucket
+            ORDER BY position ASC
             """
 
         val result = mutableSetOf<Bucket>()

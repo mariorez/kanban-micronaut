@@ -48,9 +48,9 @@ class BucketRepositoryImplTest {
         assertThat(result)
             .hasSize(2)
             .extracting("position", "name")
-            .contains(
-                Assertions.tuple(200.987, "SECOND-BUCKET"),
-                Assertions.tuple(100.15, "FIRST-BUCKET")
+            .containsExactly(
+                Assertions.tuple(100.15, "FIRST-BUCKET"),
+                Assertions.tuple(200.987, "SECOND-BUCKET")
             )
     }
 }
