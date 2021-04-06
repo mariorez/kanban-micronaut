@@ -48,12 +48,13 @@ class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepositor
         }
     }
 
-    override fun findAll(): Set<Bucket> {
+    override fun findAll(pageSize: Int): Set<Bucket> {
 
         val sql = """
             SELECT bucket_id, position, name 
             FROM bucket
             ORDER BY position ASC
+            LIMIT $pageSize
             """
 
         val result = mutableSetOf<Bucket>()
@@ -70,6 +71,6 @@ class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepositor
             }
         }
 
-        return result;
+        return Collections.unmodifiableSet(result);
     }
 }

@@ -1,8 +1,8 @@
 package org.seariver.kanbanboard.adapter.output
 
 import helper.DataSourceHelper
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.seariver.kanbanboard.application.domain.Bucket
@@ -46,11 +46,12 @@ class BucketRepositoryImplTest {
 
         // THEN
         assertThat(result)
-            .hasSize(2)
+            .hasSize(10)
             .extracting("position", "name")
-            .containsExactly(
-                Assertions.tuple(100.15, "FIRST-BUCKET"),
-                Assertions.tuple(200.987, "SECOND-BUCKET")
+            .startsWith(
+                tuple(10.15, "FIRST-BUCKET"),
+                tuple(20.987, "SECOND-BUCKET"),
+                tuple(30.1, "BUCKET-1")
             )
     }
 }

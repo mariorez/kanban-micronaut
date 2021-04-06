@@ -27,12 +27,12 @@ class KanbanboardEndpointTest {
     lateinit var bucketRepository: BucketRepository
 
     @Test
-    fun `GIVEN a valid request MUST create bucket successful`() {
+    fun `GIVEN a valid request WHEN gRPC call create bucket MUST create with success`() {
 
         runBlocking {
             // GIVEN
             val bucketId = UUID.randomUUID()
-            val position = 1.2
+            val position = 100.2
             val name = "TODO"
 
             val request = BucketGrpc.newBuilder()
@@ -52,7 +52,7 @@ class KanbanboardEndpointTest {
     }
 
     @Test
-    fun `WHEN find all buckets MUST return the result set`() {
+    fun `WHEN gRPC call find all buckets MUST return the result set in correct order`() {
 
         runBlocking {
             // WHEN
@@ -60,10 +60,12 @@ class KanbanboardEndpointTest {
 
             // THEN
             assertThat(result.bucketsList)
+                .hasSize(10)
                 .extracting("position", "name")
-                .contains(
-                    Assertions.tuple(200.987, "SECOND-BUCKET"),
-                    Assertions.tuple(100.15, "FIRST-BUCKET")
+                .startsWith(
+                    Assertions.tuple(10.15, "FIRST-BUCKET"),
+                    Assertions.tuple(20.987, "SECOND-BUCKET"),
+                    Assertions.tuple(30.1, "BUCKET-1")
                 )
         }
     }

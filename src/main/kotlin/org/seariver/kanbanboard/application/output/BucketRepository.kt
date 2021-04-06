@@ -9,6 +9,6 @@ interface BucketRepository {
 
     fun findById(bucketId: UUID): Optional<Bucket>
 
-    fun findAll(): Set<Bucket>
+    fun findAll(pageSize: Int = 10): Set<Bucket>
 
 }
