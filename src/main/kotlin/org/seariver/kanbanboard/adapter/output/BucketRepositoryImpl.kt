@@ -9,8 +9,6 @@ import javax.sql.DataSource
 @Singleton
 class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepository {
 
-    private val connection = datasource.connection
-
     override fun create(bucket: Bucket) {
 
         val sql = """
@@ -18,11 +16,13 @@ class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepositor
             values (?, ?, ?)
             """.trimIndent()
 
-        connection.prepareStatement(sql).run {
-            setObject(1, bucket.bucketId)
-            setDouble(2, bucket.position)
-            setString(3, bucket.name)
-            executeUpdate()
+        datasource.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setObject(1, bucket.bucketId)
+                stmt.setDouble(2, bucket.position)
+                stmt.setString(3, bucket.name)
+                stmt.executeUpdate()
+            }
         }
     }
 
@@ -34,16 +34,18 @@ class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepositor
             WHERE bucket_id = ?
             """
 
-        return connection.prepareStatement(sql).run {
-            setString(1, bucketId.toString())
-            executeQuery().run {
-                if (next()) Optional.of(
-                    Bucket(
-                        UUID.fromString(getString("bucket_id")),
-                        getDouble("position"),
-                        getString("name")
-                    )
-                ) else Optional.empty()
+        return datasource.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setString(1, bucketId.toString())
+                stmt.executeQuery().use { rs ->
+                    if (rs.next()) Optional.of(
+                        Bucket(
+                            UUID.fromString(rs.getString("bucket_id")),
+                            rs.getDouble("position"),
+                            rs.getString("name")
+                        )
+                    ) else Optional.empty()
+                }
             }
         }
     }
@@ -54,19 +56,21 @@ class BucketRepositoryImpl(private val datasource: DataSource) : BucketRepositor
             SELECT bucket_id, position, name 
             FROM bucket
             ORDER BY position ASC
-            LIMIT $pageSize
+            LIMIT ?
             """
 
         val result = mutableSetOf<Bucket>()
 
-        connection.prepareStatement(sql).run {
-            executeQuery().run {
-                while (next()) {
-                    result += Bucket(
-                        UUID.fromString(getString("bucket_id")),
-                        getDouble("position"),
-                        getString("name")
-                    )
+        datasource.connection.use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setInt(1, pageSize)
+                stmt.executeQuery().use { rs ->
+                    while (rs.next())
+                        result += Bucket(
+                            UUID.fromString(rs.getString("bucket_id")),
+                            rs.getDouble("position"),
+                            rs.getString("name")
+                        )
                 }
             }
         }
